@@ -30,3 +30,18 @@ func (r *mutationResolver) Login(ctx context.Context, input models.InputLogin) (
 	}
 	return nil, nil
 }
+
+func (r *mutationResolver) CreateUser(ctx context.Context, input models.InputUser) (*models.User, error) {
+	user, err := service.AuthRegisterGraphQLHandler(input)
+
+	if err != nil {
+		return nil, nil
+	} else {
+		result := models.User{
+			ID:       user.ID,
+			Username: user.Username,
+			Token:    user.Token,
+		}
+		return &result, nil
+	}
+}

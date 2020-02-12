@@ -78,6 +78,7 @@ func AuthTokenHandlerByGraphQL(input models.InputLogin) (*models.AuthResponse, e
 			log.Println(err)
 			return nil, err
 		}
+
 		return &models.AuthResponse{
 			accessToken,
 			"bearer",
@@ -191,6 +192,22 @@ func authTokenHandler(c echo.Context) error {
 type registerRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+}
+
+func AuthRegisterGraphQLHandler(input models.InputUser) (*models.UserModel, error) {
+	var err error
+
+	var user models.UserModel
+	user.Username = input.Username
+	user.SetPassword(input.Password)
+
+	err = api.SaveUser(&user)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 func authRegisterHandler(c echo.Context) error {
