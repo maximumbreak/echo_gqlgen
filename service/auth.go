@@ -86,7 +86,7 @@ func AuthTokenHandlerByGraphQL(input models.InputLogin) (*models.AuthResponse, e
 			user.ID,
 		}, nil
 	}
-	if body.GrantType == grantTypeRefreshToken {
+	if input.GrantType == grantTypeRefreshToken {
 		// handle refresh token grant type => return access token
 
 		// get user id from context
