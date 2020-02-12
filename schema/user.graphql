@@ -10,6 +10,14 @@ type UserLogin {
   token: String!
 }
 
+type AuthResponse {
+  accessToken: String!
+  tokenType: String!
+  expiresIn: Int!
+  refreshToken: String!
+  userId: String!
+}
+
 input InputUser {
   username: String!
   password: String!
@@ -18,4 +26,5 @@ input InputUser {
 input InputLogin {
   username: String!
   password: String!
+  grantType: String!
 }

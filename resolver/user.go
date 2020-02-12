@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/beforesecond/gqlgen-todos/models"
+	"github.com/beforesecond/gqlgen-todos/service"
 )
 
 func (r *queryResolver) Users(ctx context.Context) ([]*models.User, error) {
@@ -15,10 +16,17 @@ func (r *queryResolver) Users(ctx context.Context) ([]*models.User, error) {
 	return userModel, nil
 }
 
-func (r *mutationResolver) Login(ctx context.Context, input models.InputLogin) (*models.UserLogin, error) {
-	var userModel = models.UserLogin{
-		Username: "usertest",
-		Token:    "123456",
+func (r *mutationResolver) Login(ctx context.Context, input models.InputLogin) (*models.AuthResponse, error) {
+	// var userModel = models.UserLogin{
+	// 	Username: "usertest",
+	// 	Token:    "123456",
+	// }
+	token, err := service.AuthTokenHandlerByGraphQL(input)
+	//log.Print(token)
+	if err != nil {
+		return nil, nil
+	} else {
+		return token, nil
 	}
-	return &userModel, nil
+	return nil, nil
 }

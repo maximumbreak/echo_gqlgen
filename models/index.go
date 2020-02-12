@@ -2,9 +2,18 @@
 
 package models
 
+type AuthResponse struct {
+	AccessToken  string `json:"accessToken"`
+	TokenType    string `json:"tokenType"`
+	ExpiresIn    int    `json:"expiresIn"`
+	RefreshToken string `json:"refreshToken"`
+	UserID       string `json:"userId"`
+}
+
 type InputLogin struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username  string `json:"username"`
+	Password  string `json:"password"`
+	GrantType string `json:"grantType"`
 }
 
 type InputUser struct {

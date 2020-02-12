@@ -30,7 +30,7 @@ type authRequest struct {
 	RefreshToken string    `json:"refresh_token"`
 }
 
-type authResponse struct {
+type AuthResponse struct {
 	AccessToken  string `json:"access_token"`
 	TokenType    string `json:"token_type"`
 	ExpiresIn    int64  `json:"expires_in"` // unit: seconds
@@ -45,6 +45,80 @@ const (
 	grantTypePassword     = "password"
 	grantTypeRefreshToken = "refresh_token"
 )
+
+type errorString struct {
+	s string
+}
+
+func AuthTokenHandlerByGraphQL(input models.InputLogin) (*models.AuthResponse, error) {
+	var body authRequest
+	// if err := c.Bind(&body); err != nil {
+	// 	return c.String(http.StatusBadRequest, "Bad Request")
+	// }
+
+	if input.GrantType == grantTypePassword {
+		// handle password grant type => return refresh token
+		user, err := api.FindUser(input.Username, input.Password)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		if user == nil {
+			// user or password wrong = unauthorized
+			err = errors.New("Unauthorized")
+			return nil, err
+		}
+		refreshToken, err := generateRefreshToken(user.ID)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		accessToken, err := generateAccessToken(user.ID, accessTokenDuration)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		return &models.AuthResponse{
+			accessToken,
+			"bearer",
+			int(accessTokenDuration.Seconds()),
+			refreshToken,
+			user.ID,
+		}, nil
+	}
+	if body.GrantType == grantTypeRefreshToken {
+		// handle refresh token grant type => return access token
+
+		// get user id from context
+		claims, err := validateToken(body.RefreshToken)
+		if err != nil {
+			return nil, err
+		}
+		// verify refresh token in database
+		if ok, err := api.ValidateToken(body.RefreshToken, claims.ID, refreshTokenDuration); !ok {
+			if err != nil {
+				log.Println(err)
+				return nil, err
+			}
+			return nil, err
+		}
+
+		accessToken, err := generateAccessToken(claims.ID, accessTokenDuration)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		return &models.AuthResponse{
+			accessToken,
+			"bearer",
+			int(accessTokenDuration.Seconds()),
+			"",
+			claims.ID,
+		}, nil
+	}
+	err := errors.New("Unauthorized")
+	return nil, err
+}
 
 func authTokenHandler(c echo.Context) error {
 	var body authRequest
@@ -72,7 +146,7 @@ func authTokenHandler(c echo.Context) error {
 			log.Println(err)
 			return c.String(http.StatusInternalServerError, "Internal Server Error")
 		}
-		return c.JSON(http.StatusOK, authResponse{
+		return c.JSON(http.StatusOK, AuthResponse{
 			accessToken,
 			"bearer",
 			int64(accessTokenDuration.Seconds()),
@@ -102,7 +176,7 @@ func authTokenHandler(c echo.Context) error {
 			log.Println(err)
 			return c.String(http.StatusInternalServerError, "Internal Server Error")
 		}
-		return c.JSON(http.StatusOK, authResponse{
+		return c.JSON(http.StatusOK, AuthResponse{
 			accessToken,
 			"bearer",
 			int64(accessTokenDuration.Seconds()),

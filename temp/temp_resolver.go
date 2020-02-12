@@ -26,7 +26,7 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input models.NewTodo)
 func (r *mutationResolver) CreateUser(ctx context.Context, input models.InputUser) (*models.User, error) {
 	panic("not implemented")
 }
-func (r *mutationResolver) Login(ctx context.Context, input models.InputLogin) (*models.UserLogin, error) {
+func (r *mutationResolver) Login(ctx context.Context, input models.InputLogin) (*models.AuthResponse, error) {
 	panic("not implemented")
 }
 
