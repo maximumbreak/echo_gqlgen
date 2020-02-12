@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/99designs/gqlgen/handler"
-	test_gqlgen "github.com/beforesecond/gqlgen-todos"
+	"github.com/beforesecond/gqlgen-todos/generated"
 	"github.com/beforesecond/gqlgen-todos/resolver"
 	"github.com/labstack/echo"
 )
@@ -10,7 +10,7 @@ import (
 func graphqlHandler() echo.HandlerFunc {
 	// NewExecutableSchema and Config are in the generated.go file
 	// Resolver is in the resolver.go file
-	h := handler.GraphQL(test_gqlgen.NewExecutableSchema(test_gqlgen.Config{Resolvers: &resolver.Resolver{}}))
+	h := handler.GraphQL(generated.NewExecutableSchema(generated.Config{Resolvers: &resolver.Resolver{}}))
 
 	return func(c echo.Context) error {
 		h.ServeHTTP(c.Response().Writer, c.Request())

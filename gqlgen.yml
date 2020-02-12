@@ -8,10 +8,10 @@ schema:
   - schema/user.graphql
   - schema/todo.graphql
 exec:
-  filename: generated.go
+  filename: generated/generated.go
 model:
   filename: models/models.go
 resolver:
-  filename: temp_resolver.go
+  filename: temp/temp_resolver.go
   type: Resolver
 autobind: []

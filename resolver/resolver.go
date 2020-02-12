@@ -3,7 +3,7 @@ package resolver
 import (
 	"context"
 
-	test_gqlgen "github.com/beforesecond/gqlgen-todos"
+	"github.com/beforesecond/gqlgen-todos/generated"
 	"github.com/beforesecond/gqlgen-todos/models"
 )
 
@@ -11,10 +11,10 @@ import (
 
 type Resolver struct{}
 
-func (r *Resolver) Mutation() test_gqlgen.MutationResolver {
+func (r *Resolver) Mutation() generated.MutationResolver {
 	return &mutationResolver{r}
 }
-func (r *Resolver) Query() test_gqlgen.QueryResolver {
+func (r *Resolver) Query() generated.QueryResolver {
 	return &queryResolver{r}
 }
 
