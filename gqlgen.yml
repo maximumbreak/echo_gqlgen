@@ -7,10 +7,11 @@ schema:
   - schema/schema.graphql
   - schema/user.graphql
   - schema/todo.graphql
+  - schema/token.graphql
 exec:
   filename: generated/generated.go
 model:
-  filename: models/models.go
+  filename: models/index.go
 resolver:
   filename: temp/temp_resolver.go
   type: Resolver

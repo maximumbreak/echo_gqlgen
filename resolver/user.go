@@ -10,7 +10,7 @@ func (r *queryResolver) Users(ctx context.Context) ([]*models.User, error) {
 
 	var userModel = []*models.User{0: {
 		Username: "usertest",
-		Password: "123456",
+		//	Password: "123456",
 	}}
 	return userModel, nil
 }

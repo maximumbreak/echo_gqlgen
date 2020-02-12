@@ -1,9 +1,12 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/99designs/gqlgen/handler"
 	"github.com/beforesecond/gqlgen-todos/generated"
 	"github.com/beforesecond/gqlgen-todos/resolver"
+	"github.com/beforesecond/gqlgen-todos/service"
 	"github.com/labstack/echo"
 )
 
@@ -34,7 +37,40 @@ func playgroundHandler() echo.HandlerFunc {
 
 func main() {
 	e := echo.New()
+	// e.Use(
+	// 	middleware.Recover(),
+	// 	middleware.Secure(),
+	// 	middleware.Logger(),
+	// 	middleware.Gzip(),
+	// 	middleware.BodyLimit("2M"),
+	// 	// middleware.CORSWithConfig(middleware.CORSConfig{
+	// 	// 	// AllowOrigins: []string{
+	// 	// 	// 	"http://localhost:8080",
+	// 	// 	// },
+	// 	// 	AllowHeaders: []string{
+	// 	// 		echo.HeaderOrigin,
+	// 	// 		echo.HeaderContentLength,
+	// 	// 		echo.HeaderAcceptEncoding,
+	// 	// 		echo.HeaderContentType,
+	// 	// 		echo.HeaderAuthorization,
+	// 	// 	},
+	// 	// 	AllowMethods: []string{
+	// 	// 		echo.GET,
+	// 	// 		echo.POST,
+	// 	// 	},
+	// 	// 	MaxAge: 3600,
+	// 	// }),
+	// )
+
+	// Health check
+	e.GET("/_ah/health", func(c echo.Context) error {
+		return c.String(http.StatusOK, "OK")
+	})
 	e.GET("/", playgroundHandler())
 	e.POST("/query", graphqlHandler())
+
+	// Register services
+	service.Auth(e.Group("/auth"))
+
 	e.Logger.Fatal(e.Start(":1323"))
 }

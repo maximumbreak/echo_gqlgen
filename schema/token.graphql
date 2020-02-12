@@ -1,0 +1,6 @@
+type Token {
+  userId: ID!
+  createdAt: String!
+  lastAccessAt: String!
+  token: String!
+}
