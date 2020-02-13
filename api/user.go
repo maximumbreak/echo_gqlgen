@@ -26,8 +26,6 @@ func FindUser(username, password string) (*models.UserModel, error) {
 
 	if err != nil {
 		log.Print(username, " ", err)
-	} else {
-		log.Print("user =>", user)
 	}
 	if !user.ComparePassword(password) {
 		// wrong password return like user not found

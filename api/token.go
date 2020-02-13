@@ -3,27 +3,38 @@ package api
 import (
 	"time"
 
+	"github.com/beforesecond/gqlgen-todos/databases"
 	"github.com/beforesecond/gqlgen-todos/models"
+	"gopkg.in/mgo.v2/bson"
 )
 
 const kindToken = "Token"
 
 // CreateToken save new token to database
 func CreateToken(token string, userID string) error {
-	//  ctx, cancel := getContext()
-	//  defer cancel()
-	//  var err error
-	//  tk := &model.Token{
-	//   Token:  token,
-	//   UserID: userID,
-	//  }
-	//  tk.Stamp()
-	//  key := datastore.IncompleteKey(kindToken, nil)
-	//  key, err = client.Put(ctx, key, tk)
-	//  if err != nil {
-	//   return err
-	//  }
-	//  tk.SetKey(key)
+	session := databases.GetMGO()
+	defer session.Close()
+
+	col := session.DB("test").C("users")
+	query := bson.M{
+		"user.id": userID,
+	}
+
+	user := models.UserModel{}
+
+	err := col.Find(query).One(&user)
+
+	if err != nil {
+		return err
+	}
+	user.Token = token
+	user.Stamp()
+
+	err = col.Update(query, user)
+
+	if err != nil {
+		return err
+	}
 	return nil
 }
 func getToken(token string) (*models.Token, error) {
