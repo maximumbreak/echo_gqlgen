@@ -281,6 +281,18 @@ type authRevokeRequest struct {
 	Token string `json:"token"`
 }
 
+func AuthRevokeHandlerGraphQL(token string) error {
+	var err error
+	if token == "" {
+		return err
+	}
+	if err = api.DeleteToken(token); err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
+}
+
 func authRevokeHandler(c echo.Context) error {
 	var body authRevokeRequest
 	var err error

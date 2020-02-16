@@ -45,3 +45,13 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input models.InputUse
 		return &result, nil
 	}
 }
+
+func (r *mutationResolver) RevokeToken(ctx context.Context, token string) (*models.AuthResponse, error) {
+	err := service.AuthRevokeHandlerGraphQL(token)
+	if err != nil {
+		return nil, nil
+	} else {
+		result := models.AuthResponse{}
+		return &result, nil
+	}
+}

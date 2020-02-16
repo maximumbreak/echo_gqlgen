@@ -29,6 +29,9 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input models.InputUse
 func (r *mutationResolver) Login(ctx context.Context, input models.InputLogin) (*models.AuthResponse, error) {
 	panic("not implemented")
 }
+func (r *mutationResolver) RevokeToken(ctx context.Context, token string) (*models.AuthResponse, error) {
+	panic("not implemented")
+}
 
 type queryResolver struct{ *Resolver }
 

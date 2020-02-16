@@ -5,6 +5,7 @@ import (
 
 	"github.com/beforesecond/gqlgen-todos/databases"
 	"github.com/beforesecond/gqlgen-todos/models"
+	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -45,14 +46,26 @@ func DeleteToken(token string) error {
 	db := databases.GetMGO()
 	defer db.Close()
 	col := db.C("users")
-	query := bson.M{
-		"user.token": token,
+	///
+	index := mgo.Index{
+		Key: []string{"$text:user.token"},
 	}
+	col.EnsureIndex(index)
+	query := bson.M{"$text": bson.M{
+		"$search": token,
+	}}
 	user := models.UserModel{}
+
+	err := col.Find(query).One(&user)
+
+	if err != nil {
+		return err
+	}
+	///
 	user.Token = ""
 	user.Stamp()
 
-	err := col.Update(query, user)
+	err = col.Update(query, user)
 	if err != nil {
 		return err
 	}
