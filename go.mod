@@ -11,6 +11,7 @@ require (
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-isatty v0.0.11 // indirect
 	github.com/satori/go.uuid v1.2.0
+	github.com/spf13/viper v1.6.2
 	github.com/valyala/fasttemplate v1.1.0 // indirect
 	github.com/vektah/gqlparser v1.2.0
 	golang.org/x/crypto v0.0.0-20200109152110-61a87790db17

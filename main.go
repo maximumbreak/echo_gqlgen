@@ -1,13 +1,18 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"net/http"
+	"os"
+	"strings"
 
 	"github.com/99designs/gqlgen/handler"
 	"github.com/beforesecond/gqlgen-todos/generated"
 	"github.com/beforesecond/gqlgen-todos/resolver"
 	"github.com/beforesecond/gqlgen-todos/service"
 	"github.com/labstack/echo"
+	"github.com/spf13/viper"
 )
 
 func graphqlHandler() echo.HandlerFunc {
@@ -36,6 +41,25 @@ func playgroundHandler() echo.HandlerFunc {
 }
 
 func main() {
+
+	switch os := strings.ToUpper(os.Getenv("ENV")); os {
+	case "PROD":
+		viper.SetConfigFile("./configs/env.production.yaml")
+	case "DEV":
+		viper.SetConfigFile("./configs/env.development.yaml")
+	default:
+		viper.SetConfigFile("./configs/env.local.yaml")
+		fmt.Printf("%s.\n", os)
+	}
+
+	err := viper.ReadInConfig()
+
+	// Handle errors reading the config file
+	if err != nil {
+		log.Fatal("Fatal error config file", err)
+	}
+
+	port := viper.GetString("app.port")
 	e := echo.New()
 	// e.Use(
 	// 	middleware.Recover(),
@@ -72,5 +96,5 @@ func main() {
 	// Register services
 	service.Auth(e.Group("/auth"))
 
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(":" + port))
 }

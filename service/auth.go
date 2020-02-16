@@ -287,11 +287,11 @@ func authRevokeHandler(c echo.Context) error {
 	if err = c.Bind(&body); err != nil || body.Token == "" {
 		return c.String(http.StatusBadRequest, "Bad Request")
 	}
-	// if err = api.DeleteToken(body.Token); err != nil {
-	// 	log.Println(err)
-	// 	return c.String(http.StatusInternalServerError, "Internal Server Error")
-	// }
-	return c.String(http.StatusOK, "OK")
+	if err = api.DeleteToken(body.Token); err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
 }
 
 func getTokenFromHeader(c echo.Context) string {

@@ -12,10 +12,9 @@ const kindToken = "Token"
 
 // CreateToken save new token to database
 func CreateToken(token string, userID string) error {
-	session := databases.GetMGO()
-	defer session.Close()
-
-	col := session.DB("test").C("users")
+	db := databases.GetMGO()
+	defer db.Close()
+	col := db.C("users")
 	query := bson.M{
 		"user.id": userID,
 	}
@@ -43,12 +42,20 @@ func getToken(token string) (*models.Token, error) {
 }
 
 func DeleteToken(token string) error {
-	//tk, err := getToken(token)
-	// if err != nil {
-	// 	return err
-	// }
+	db := databases.GetMGO()
+	defer db.Close()
+	col := db.C("users")
+	query := bson.M{
+		"user.token": token,
+	}
+	user := models.UserModel{}
+	user.Token = ""
+	user.Stamp()
 
-	//defer cancel()
+	err := col.Update(query, user)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

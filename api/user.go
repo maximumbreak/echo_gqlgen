@@ -13,10 +13,9 @@ const kindUser = "User"
 
 // FindUser from datastore
 func FindUser(username, password string) (*models.UserModel, error) {
-	session := databases.GetMGO()
-	defer session.Close()
-
-	col := session.DB("test").C("users")
+	db := databases.GetMGO()
+	defer db.Close()
+	col := db.C("users")
 	user := models.UserModel{}
 	query := bson.M{
 		"user.username": username,
@@ -37,10 +36,9 @@ func FindUser(username, password string) (*models.UserModel, error) {
 
 // SaveUser to datastore
 func SaveUser(user *models.UserModel) error {
-	session := databases.GetMGO()
-	defer session.Close()
-
-	col := session.DB("test").C("users")
+	db := databases.GetMGO()
+	defer db.Close()
+	col := db.C("users")
 	u2 := uuid.NewV4()
 
 	user.ID = u2.String()
